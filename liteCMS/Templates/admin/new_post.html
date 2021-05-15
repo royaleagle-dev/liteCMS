@@ -1,0 +1,50 @@
+{% extends 'Templates/admin/admin_layout.html' %}
+
+{% block title %}
+New Post
+{% endblock %}
+
+{% block main-area %}
+<div class = "new-post" style = "margin-top:60px;">
+
+	<div contenteditable="true" class = "post-title">Title Here</div>
+	<hr style = "width:100%" align = "left">
+
+	<div id = "editor" style = "font-size:1.5rem;">
+	</div>
+
+	<div style = "display:grid;grid-template-columns:1fr 1fr;grid-gap:10px;">
+		<div>
+			<select name = "tags[]" style = "height:100px;width:100%;overflow-y:scroll" multiple>
+				<option value = '1'>--Select Tags</option>
+				<option value = '2'>Okay 1</option>
+				<option value = '3'>Okay 2</option>
+				<option value = '4'>Okay 3</option>
+				<option value = '5'>Okay 4</option>
+				<option value = '6'>Okay 5</option>
+			</select>
+		</div>
+
+		<div style = "display:grid;grid-template-rows:1fr 1fr 1fr;grid-row-gap:10px;align-items:right;">
+			<div>
+				<button disabled>Author: Ayotunde</button>
+			</div>
+			<div>
+				<button>Save as Draft</button>
+			</div>
+			<div>
+				<button>Publish</button>
+			</div>
+
+		</div>
+
+	</div>
+
+	
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src = "@php@echo root@endphp@static/trumbowyg/dist/trumbowyg.min.js"></script>
+<script src = "@php@echo root@endphp@static/editor.js"></script>
+{% endblock %}

@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php?path=$1 [NC,L,QSA]
+
+<FilesMatch "\.(mp3)">
+order allow,deny
+deny from all
+</FilesMatch>

@@ -1,0 +1,31 @@
+{% extends 'Templates/admin/admin_layout.html' %}
+
+{% block title %}
+Users
+{% endblock %}
+
+{% block main-area %}
+<div class = "main-row" style = "margin-top:60px;">
+	<h2 style = "margin-bottom:5px;">BLOG POSTS</h2><small>Order by <select>
+		<option>Date</option>
+		<option>Likes</option>
+	</select></small>
+	<hr style = "width:80%" align = "left">
+
+	{% foreach ($post_list as $post): %}
+	<div align = "left" class = "box">
+		<input type = "checkbox" value = "1" checked style = "display:inline;width:inherit;margin-bottom:0;">
+		<h3 style = "display:inline">{{ $post->title }}</h3>
+		<section style = "display:inline;float:right;">
+			<button>Edit</button>
+			<button>Delete</button>
+			<button>Unpublish</button>
+		</section>
+	</div>
+	{% endforeach; %}
+	
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
