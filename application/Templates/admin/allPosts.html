@@ -1,0 +1,149 @@
+{%extends "admin/base.html" %}
+
+{% block otherCSS %}
+{% endblock %}
+
+{% block title %}
+LiteCMS - Posts
+{% endblock %}
+
+{% block main %}
+<style>
+    body{
+        overflow:hidden;
+    }
+    .pagination-btn{
+        background-color:black;
+        padding-top:10px;
+        padding-bottom:10px;
+        padding-right:10px;
+        padding-left:10px;
+        color:white;
+        outline:none;
+        border:none;
+        text-decoration:none;
+    }
+    .pagination-btn:hover, .pagination-btn-links:hover{
+        background-color:grey;
+        cursor:pointer;
+    }
+
+    .status-btn{
+        float:right;
+        background-color:black;
+        padding:5px;
+        color:white;
+    }
+
+    .pagination-btn-links{
+        background-color:black;
+        color:white;
+        padding-left:10px;
+        padding-right:10px;
+        padding-top:10px;
+        padding-bottom:10px;
+        text-decoration:none;
+    }
+</style>
+<div class = "container">
+    @php
+        $pg_msg = isset($msg)?$msg:'';
+        if(isset($_SESSION['msg'])){
+            $pg_msg = $_SESSION['msg'];
+        }
+    @endphp
+    @php if($pg_msg): @endphp
+    <div style = "color:white;margin:0 auto;text-align:center;background-color:grey;padding:2px;position:absolute;z-index:0;width:100%;top:20;left:0;">
+        <hr>
+        <small>{{ $pg_msg }}</small>
+        @php unset($_SESSION['msg']) @endphp
+    </div>
+    @php endif @endphp
+            
+    <div class = "row">
+        <div class = "col-md-3" style = "">
+            <div>
+                <h5 class = "panel bg-lightgrey">Search</h5>
+                <input type = "text" placeholder = "Search Posts" id = "search" name = "search">
+                <p id = "searchResult"></p>
+                <div id = "resultDisplay" style = "margin:10px;font-size:.8rem;height:500px;overflow:scroll"></div>
+            </div>
+        </div>
+
+        <div class = "col-md-6">
+            <div class = "" style = "height:600px;overflow:auto;width:100%">
+                <h5 class = "panel bg-lightgrey">All Posts</h5>
+                @php foreach($allPosts as $post): @endphp
+                <!--individual post item-->
+                <div class = "post" style = "padding-right:25px;padding-left:25px;">
+                    <div class = "post-head">
+                        <p><a href = "{% url post_edit %}/{{ $post->id }}"> {{$post->title}} </a>  @php if($post->published == 1): @endphp <small class = "status-btn">published</small> @php endif; @endphp</p>
+                    </div>
+                    <div class = "post-body">
+                        <p class = "">{{$post->content}}
+                        </p>
+                    </div>
+                    <div class = " post-foot">
+                        <a href = "{% url post_edit %}/{{$post->id}}" style = "float:right">Edit</a>
+                        <a href = "{% url post_delete %}/{{$post->id}}" style = "float:right">Delete</a>
+                        <a href = "" style = "float:right">Unpublish</a>
+                        <small>Author: <i>{{$post->firstname}} &nbsp;&nbsp;&nbsp;</i> Likes: <i>Number of likes</i></small>
+                    </div>
+                    <hr>
+                    <br>
+                </div>
+                <!--end post item-->
+                @php endforeach; @endphp
+
+                <div style = "padding-bottom:10px;margin-top:10px;" align = "right">
+                    <a href = "?page={{$prev}}" class = "pagination-btn" id = "prev">Previous</a>
+                    @php for($i=1; $i<=$pages; $i++): @endphp
+                    <a @php if (isset($_GET['page']) && $_GET['page'] == $i):@endphp style = 'background-color:grey'; @php endif; @endphp class = "pagination-btn-links" href = "?page={{$i}} ">{{$i}}</a>
+                    @php endfor; @endphp
+                    <a href = "?page={{$next}}" class = "pagination-btn" id = "next" >Next</a>
+                </div>
+            </div>    
+        </div>
+        <div class = "col-md-3">
+            <h5 class = "panel bg-black">Filters</h5>
+            <button class = "filter-btn">Published</button>
+            <button class = "filter-btn">Draft</button>
+            <button class = "filter-btn">Trashed</button>
+            <hr>
+    
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block otherJS %}
+<script>
+    $("#search").focus()
+</script>
+<script>
+    const search = $("#search");
+    search.change(function(){
+        $("#resultDisplay").empty();
+        const searchResult = $("#searchResult");
+        //searchResult.text(search.val());
+        $.ajax({
+            'url':"{% url searchPost %}",
+            'type':"GET",
+            'data':{
+                'searchText':search.val(),
+            },
+            'success':function(response){
+                result = JSON.parse(response);
+                result = result.result
+                //console.log(result);
+                displayResult = $("#resultDisplay");
+                for(i=0; i<result.length; i++){
+                    text = result[i]['title'],
+                    id = result[i]['id']
+                    displayResult.append(`<p><a href = "{% url post_edit %}/${id}" >${text}</a></p>`)
+                }
+            }
+        })
+    })
+</script>
+{% endblock %}

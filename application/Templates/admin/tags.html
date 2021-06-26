@@ -1,0 +1,50 @@
+{% extends "admin/base.html" %}
+
+{% block otherCSS %}
+<link rel = "stylesheet" href = "{{URL_ROOT}}/css/createPost.css">
+<link rel = "stylesheet" href = "{{URL_ROOT}}/trumbowyg/dist/ui/trumbowyg.min.css">
+{% endblock %}
+
+{% block title %}
+New Post
+{% endblock %}
+
+{% block main %}
+
+<div class = "container">
+    <div class = "row" style = "margin-top:20px;">
+        <div class = "col-md-3" style = "overflow:auto;">
+
+        </div>
+        <div class = "col-md-6" style = "margin-left:10px;">
+            <h2 style = "text-align:center;">TAGS</h2>
+            <hr style = "width:60%;">
+            <div>
+                @php foreach($tags as $tag): @endphp
+                <h4><a href = "{% url tag_detail %}/{{$tag->id}}" >{{$tag->name}}</a> <small style = "float:right"><a href = "javascript:void(0)" onclick = "confirmDeleteTag('deleteTag-{{$tag->id}}')" id = "deleteTag-{{$tag->id}}">Delete</a></small></h4>
+                <hr>
+                @php endforeach; @endphp
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block otherJS %}
+<script>
+    function confirmDeleteTag(elemId){
+        const delete_t = confirm("Do you really want to delete this tag");
+        if(delete_t){
+            deleteTag(elemId);
+        }else{
+            //
+        }
+    }
+    function deleteTag(elemId){
+        element = document.querySelector(`#${elemId}`);
+        const tagId = elemId.replace('deleteTag-', '')
+        console.log(tagId);
+        window.location = `{% url tag_delete %}/${tagId}`;
+    }
+</script>
+{% endblock %}

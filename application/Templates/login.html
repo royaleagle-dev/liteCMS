@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>User-Authentication</title>
+        <style>
+            body{
+                font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                overflow:hidden;
+            }
+
+            .form-panel{
+                width:25%;
+                position:absolute;
+                top:30%;
+                left:37%;
+            }
+
+            .container{
+                margin:10px;
+            }
+
+            form{
+                margin:10px;
+            }
+
+            form input:focus{
+                animation-name: change_form_outline_color;
+                animation-duration: 1s;
+                animation-iteration-count: infinite;
+            }
+
+            #selectColor{
+                height:2rem;
+            }
+
+            form input, form select{
+                width:100%;
+                height:1.5rem;
+                margin-bottom:.5rem;
+                font-size:1rem;
+                outline:none;
+                border:none;
+                background-color:lightgrey;
+                color:black;
+                padding:5px;
+            }
+            .submit-btn{
+                width:100%;
+                background-color:black;
+                padding:10px 5px 10px 5px;
+                color:white;
+                border:none;
+                outline:none;
+            }
+
+            .submit-btn:hover{
+                background-color:lightgrey;
+                color:black;
+                cursor:pointer;
+                font-weight:bolder;
+            }
+
+            @keyframes change_form_outline_color{
+                0% {outline: 2px solid grey;}
+                50% {outline: 2px solid lightgrey;}
+                75% {outline: 2px solid black;}
+                100% {outline: 2px solid grey;}
+            }
+
+            .topbar{
+                padding:10px;
+                background-color:black;
+                color:white;
+                position:fixed;
+                top:0;
+                left:0;
+                width:100%;
+                z-index:100;
+            }
+
+            .bottombar{
+                text-align:center;
+                padding:10px;
+                background-color:black;
+                color:white;
+                position:fixed;
+                bottom:0;
+                left:0;
+                width:100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <div class = "container">
+                <div class = "topbar">
+                    LiteCMS
+                </div>
+
+                @php
+        $pg_msg = isset($msg)?$msg:'';
+        if(isset($_SESSION['msg'])){
+            $pg_msg = $_SESSION['msg'];
+        }else{
+            $pg_msg = "User Not Authenticated";
+        }
+    @endphp
+    @php if($pg_msg): @endphp
+    <div style = "color:white;text-align:center;background-color:grey;padding:1px;position:absolute;z-index:0;width:100%;top:5%;left:0;">
+        <hr>
+        <small>{{ $pg_msg }}</small>
+        @php unset($_SESSION['msg']) @endphp
+    </div>
+    @php endif @endphp
+
+                <div class = "form-panel" id = "formPanel">
+                    <h3>Login to your Account</h3>
+                    <hr>
+                    <form>
+                        <input type = "email" placeholder = "email" required>
+                        <input type = "password" placeholder = "password" required>
+                        <button class = "submit-btn" id = "next-btn">Next</button>
+                    </form>
+                </div>
+                <div class = "form-panel" style = "display:none;" id = "colorPanel">
+                    <h3>Choose your Secret Color</h3>
+                    <hr>
+                    <form method = "POST" action = "{% url auth %}">
+                        <input type = "hidden" name = "email" value = "" id = "finalEmail">
+                        <input type = "hidden" name = "password" value = "" id = "finalPassword">
+                        <select name = "color" id = "selectColor">
+                            @php foreach ($colors as $id=>$color): @endphp
+                            <option style = "background-color:{{$color}}" value = "{{$id}}">{{ $color }}</option>
+                            @php endforeach; @endphp
+                        </select>
+                        <button class = "submit-btn" type = "submit">Sign In</button>
+                    </form>
+                </div>
+                <div class = "bottombar">
+                    Easy-code Solutions (c)2020
+                </div>
+            </div>
+        </div>
+        <script src = "{{URL_ROOT}}vendor/jquery-3.5.1.js"></script>
+        <script>
+            const nextBtn = $("#next-btn");
+            const email = $("input[type='email']");
+            const password = $("input[type='password']");
+            const color_select = $("select[name='color']");
+            const login_btn = $("button[type='submit']");
+
+            nextBtn.click(function(e){
+                e.preventDefault();
+                show_color_select();
+            })
+
+            function show_color_select(){
+                let color_val = '';
+                const panel = $("#colorPanel").show('fast');
+                const formPanel = $("#formPanel").hide('fast');
+                $("#finalEmail").val(email.val());
+                $("#finalPassword").val(password.val());
+                login_btn.click(function(e){
+                    e.preventDefault();
+                    login_user();
+                })
+            }
+
+            function login_user(){
+                $.ajax({
+                    'url': '{% url auth %}',
+                    'type':'POST',
+                    'data':{
+                        'email':email.val(),
+                        'password':password.val(),
+                        'color':color_select.val(),
+                        'type':'login'
+                    },
+                    'success':function($response){
+                        let data = JSON.parse($response);
+                        msg = data['msg'];
+                        location = data['location'];
+                        //window.location = location;
+                        console.log(msg);
+
+                    },
+                })
+            }
+
+            
+        </script>
+    </body>
+</html>

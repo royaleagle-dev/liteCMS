@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <link rel = "stylesheet" href = "{{ URL_ROOT }}css/style.css">
+        {% block otherCSS %}
+        {% endblock %}
+    </head>
+    <body>
+        <div class = "container-full">
+            <div class = "navigation-top-bar">
+                <ul>
+                    <li><a href = "{% url dashboard %}" class = "nav-item">Home</a></li>
+                    <li><a href = "{% url allPosts %}" class = "nav-item">Posts</a></li>
+                    <li><a href = "javascript:void(0)" class = "nav-item">Users</a></li>
+                    <li><a href = "javascript:void(0)" class = "nav-item">Pages</a></li>
+                    <li><a href = "{% url tags %}" class = "nav-item">Tags</a></li>
+                    <li><a href = "{% url logout %}" class = "nav-item">Logout</a></li>
+                </ul>
+            </div>
+            {% block main %}
+            {% endblock %}
+        </div>
+        <script src = "{{URL_ROOT}}/vendor/jquery-3.5.1.js"></script>
+        {% block otherJS %}
+        {% endblock %}
+    </body>
+</html>

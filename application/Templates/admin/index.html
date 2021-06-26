@@ -1,0 +1,94 @@
+{% extends "admin/base.html" %}
+
+{% block otherCSS %}
+{% endblock %}
+
+{% block otherJS %}
+{% endblock %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block main %}
+<div class = "container">
+    @php
+        $pg_msg = isset($msg)?$msg:'';
+        if(isset($_SESSION['msg'])){
+            $pg_msg = $_SESSION['msg'];
+        }
+    @endphp
+    @php if($pg_msg): @endphp
+    <div style = "color:white;margin:0 auto;text-align:center;background-color:grey;padding:2px;position:absolute;z-index:0;width:100%;top:20;left:0;">
+        <hr>
+        <small>{{ $pg_msg }}</small>
+        @php unset($_SESSION['msg']) @endphp
+    </div>
+    @php endif @endphp
+            
+    <div class = "row">
+        <div class = "col-md-9">
+
+            <div class = "" style = "height:600px;overflow:auto;">
+
+                <div class = "jumbo bg-lightgrey" style="height:400px;">
+                </div>
+
+                <h5 class = "panel bg-lightgrey">All Posts</h5>
+
+                @php foreach($fivePosts as $post): @endphp
+                <!--individual post item-->
+                <div class = "post" style = "padding-right:25px;padding-left:25px;">
+                    <div class = "post-head">
+                        <p><a href = "{% url post_edit %}/{{ $post->id }}">{{$post->title}}</a></p>
+                    </div>
+                    <div class = "post-body">
+                        <p class = "">{{$post->content}}
+                        </p>
+                    </div>
+                    <div class = " post-foot">
+                        <a href = "" style = "float:right">Edit</a>
+                        <a href = "{% url post_delete %}/{{$post->id}}" style = "float:right">Delete</a>
+                        <a href = "" style = "float:right">Unpublish</a>
+                        <small>Author: <i>{{$post->firstname}} &nbsp;&nbsp;&nbsp;</i> Likes: <i>Number of likes</i></small>
+                    </div>
+                </div>
+                <br>
+                <hr>
+            <!--end post item-->
+            @php endforeach; @endphp
+            </div>
+            
+        </div>
+        <div class = "col-md-2">
+            <h3 class = "panel bg-black" style = "text-align:center;cursor:pointer;" id = "newPost"> + New Post</h3>
+            <h5 class = "panel bg-lightgrey">Last 7 days</h5>
+            <small>The publisher of faith</small>
+            <hr>
+            <small>Who is this</small>
+            <hr>
+            <small>How to train your dog</small>
+            <hr>
+            <!--
+            {{ $_SESSION['firstname'] }}
+            {{ $_SESSION['email'] }}
+            -->
+            
+            <div>
+                <h5 class = "panel bg-lightgrey">Post Statistics</h5>
+                <p>Published: {{$published}}</p>
+                <p>Trashed: {{$trashed}}</p>
+                <p>Draft: {{$draft}}</p>
+                <p>Total: {{$allPosts}}</p>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const new_post = document.querySelector("#newPost");
+    new_post.onclick = function(){
+        window.location = "{% url createPost %}/{{$_SESSION['email']}}"
+    }
+</script>
+{% endblock %}

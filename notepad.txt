@@ -1,0 +1,34 @@
+Every request to the browser gets redirected through the public folder
+The private folder is not visible
+
+------------------------------------------------------
+database tables and conf
+-----------------------------------------------------
+
+CREATE TABLE lite_post(
+    id INTEGER(11) AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT(10000) NOT NULL,
+    author INTEGER(5) NOT NULL
+)
+
+CREATE TABLE tags(
+    id INTEGER(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL
+)
+
+CREATE TABLE authors(
+    id INTEGER(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    firstname VARCHAR(255) NOT NULL,
+    lastname VARCHAR(255) NOT NULL,
+    email VARCHAR (255) NOT NULL,
+    password VARCHAR (255) NOT NULL
+)
+
+ALTER TABLE `lite_post` ADD FOREIGN KEY (`author`) REFERENCES `lite_authors`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+CREATE TABLE lite_posts_tags(
+    id INTEGER(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    post_id INTEGER(11) NOT NULL,
+    tag_id INTEGER(11) NOT NULL
+)

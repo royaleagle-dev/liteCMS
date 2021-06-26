@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}
+Blog - Home
+{% endblock %}
+
+{% block content %}
+main id="main">
+
+    <!-- ======= Blog Section ======= -->
+    <section class="breadcrumbs">
+      <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Blog</h2>
+
+          <ol>
+            <li><a href="index.html">Home</a></li>
+            <!--<li>Blog</li>-->
+          </ol>
+        </div>
+
+      </div>
+    </section><!-- End Blog Section -->
+
+    <!-- ======= Blog Section ======= -->
+    <section id="blog" class="blog">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row">
+
+          <div class="col-lg-8 entries">
+
+            @php foreach ($posts as $post): @endphp
+            <article class="entry">
+
+              <div class="entry-img">
+                <img src="assets/img/blog/blog-1.jpg" alt="" class="img-fluid">
+              </div>
+
+              <h2 class="entry-title">
+                <a href="{% url blogPost %}/{{ $post->id }}/{{$post->post_url}}" >{{$post->title}}</a>
+              </h2>
+
+              <div class="entry-meta">
+                <ul>
+                  <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="blog-single.html">{{$post->firstname}}</a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="blog-single.html"><time>{{$post->date_posted}}</time></a></li>
+                  <!--<li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="blog-single.html">12 Comments</a></li>-->
+                </ul>
+              </div>
+
+              <div class="entry-content">
+                <p>
+                  {{ $post->content }}
+                </p>
+                <div class="read-more">
+                  <a href="blog-single.html">Read More</a>
+                </div>
+              </div>
+
+            </article><!-- End blog entry -->
+            @php endforeach; @endphp
+
+          </div><!-- End blog entries list -->
+
+          <div class="col-lg-4">
+
+            <div class="sidebar">
+
+              <h3 class="sidebar-title">Search</h3>
+              <div class="sidebar-item search-form">
+                <form action="">
+                  <input type="text">
+                  <button type="submit"><i class="bi bi-search"></i></button>
+                </form>
+              </div><!-- End sidebar search formn-->
+
+              <!--
+              <h3 class="sidebar-title">Categories</h3>
+              <div class="sidebar-item categories">
+                <ul>
+                  <li><a href="#">General <span>(25)</span></a></li>
+                  <li><a href="#">Lifestyle <span>(12)</span></a></li>
+                  <li><a href="#">Travel <span>(5)</span></a></li>
+                  <li><a href="#">Design <span>(22)</span></a></li>
+                  <li><a href="#">Creative <span>(8)</span></a></li>
+                  <li><a href="#">Educaion <span>(14)</span></a></li>
+                </ul>
+              </div>
+                -->
+
+              <h3 class="sidebar-title">Recent Posts</h3>
+              
+              <div class="sidebar-item recent-posts">
+                @php foreach($posts as $post): @endphp
+                <div class="post-item clearfix">
+                  <img src="assets/img/blog/blog-recent-5.jpg" alt="">
+                  <h4><a href="blog-single.html">{{$post->title}}</a></h4>
+                  <time datetime="2020-01-01">{{$post->date_posted}}</time>
+                </div>
+                @php endforeach; @endphp
+
+              </div><!-- End sidebar recent posts-->
+
+              <h3 class="sidebar-title">Tags</h3>
+              <div class="sidebar-item tags">
+                <ul>
+                    @php foreach($tags as $tag): @endphp
+                        <li><a href="#">{{$tag->name}}</a></li>
+                    @php endforeach; @endphp
+                </ul>
+              </div><!-- End sidebar tags-->
+
+            </div><!-- End sidebar -->
+
+          </div><!-- End blog sidebar -->
+
+        </div>
+
+      </div>
+    </section><!-- End Blog Section -->
+
+  </main><!-- End #main -->
+{% endblock %}

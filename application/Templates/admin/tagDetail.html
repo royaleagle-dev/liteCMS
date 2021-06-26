@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+
+{% block otherCSS %}
+<link rel = "stylesheet" href = "{{URL_ROOT}}/css/createPost.css">
+<link rel = "stylesheet" href = "{{URL_ROOT}}/trumbowyg/dist/ui/trumbowyg.min.css">
+{% endblock %}
+
+{% block title %}
+New Post
+{% endblock %}
+
+{% block main %}
+
+<div class = "container">
+    <div class = "row" style = "margin-top:20px;">
+        <div class = "col-md-3" style = "overflow:auto;">
+
+        </div>
+        <div class = "col-md-6" style = "margin-left:10px;">
+            <h2 style = "text-align:center;">posts in <span style = "text-transform:uppercase;">{{$tagName}}</span></h2>
+            <hr style = "width:60%;">
+            <div>
+                @php foreach($posts as $post): @endphp
+                <p><a href = "{% url post_edit %}/{{$post->id}}" >{{$post->title}}</a> <small style = "float:right">{{$post->date_posted}}</small></p>
+                @php endforeach; @endphp
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block otherJS %}
+<script>
+    
+</script>
+{% endblock %}

@@ -1,0 +1,81 @@
+#editor-title{
+    outline:none;
+    border:none;
+    border-bottom:3px solid grey;
+    font-size:1.75rem;
+    padding-top:5px;
+}
+
+.side-btn{
+    width:100%;
+    height:40px;
+    margin-bottom:10px;
+    background-color:black;
+    color:white;
+    outline:none;
+    border:none;
+}
+
+.side-btn:hover{
+    background-color:lightgrey;
+    color:black;
+    cursor:pointer;
+}
+
+::-webkit-scrollbar{
+    background:black;
+}
+
+::-webkit-scrollbar-thumb:hover{
+    background:lightgrey;
+}
+
+::-webkit-scrollbar-button{
+    background:grey;
+}
+
+select{
+    width:100%;
+    height:150px;
+}
+
+option{
+    padding:10px;
+    text-align:center;
+}
+
+.pop-wrapper{
+    width:100%;
+    position:fixed;
+    z-index:10000;
+    overflow:hidden;
+    height:100%;
+    background-color:rgba(0, 0, 0, 0.6);
+}
+
+.pop{
+    background-color:white;
+    width:30%;
+    position:absolute;
+    top:45;
+    left:35vw;
+    top:35vh;
+
+}
+
+
+
+.pop input{
+    width:100%;
+    border:none;
+    outline:none;
+    margin:0;
+    padding:0;
+    padding-top:10px;
+    padding-bottom:10px;
+    font-size:1rem;
+}
+
+.pop-content{
+    
+}

@@ -1,0 +1,232 @@
+{% extends "admin/base.html" %}
+
+{% block otherCSS %}
+<link rel = "stylesheet" href = "{{URL_ROOT}}/css/createPost.css">
+<link rel = "stylesheet" href = "{{URL_ROOT}}/trumbowyg/dist/ui/trumbowyg.min.css">
+{% endblock %}
+
+{% block title %}
+New Post
+{% endblock %}
+
+{% block main %}
+
+<div class = "pop-wrapper" id = "popper" style = "display:none;">
+    <div class = "pop" style = "padding:10px;">
+        <div class = "pop-content">
+            
+                <input type = "text" name = "tagname" id = "tagname" placeholder = "Tag Name" required>
+                <button class = "side-btn" id = "submitAddTag">Submit</button>
+            
+        </div>
+    </div>
+</div>
+
+<style>
+    .others{
+        text-align:center;
+    }
+    .others .others-btn{
+        padding-left:10px;
+        padding: right 10px;
+        padding-top:15px;
+        padding-bottom:15px;
+        background-color:black;
+        color:white;
+        outline:none;
+        border:none;
+        cursor:pointer;
+        text-align:center;
+    }
+</style>
+
+<div class = "container">
+    <div class = "row" style = "margin-top:20px;">
+        <div class = "col-md-9" style = "overflow:auto;">
+            <div style = "padding:2px;">
+                <div contenteditable='true' id="editor-title">Title Here</div>
+                <textarea id = "editor"></textarea>
+                <div style = "display:none" id = "authorEmail">{{$_SESSION['email']}}</div>
+                <div class = "others">
+                    <button class = "others-btn" id = "uploadPicture">Upload Main Picture</button>
+                    <button class = "others-btn">Disable Comments</button>
+                    <button class = "others-btn">Change Author</button>
+                </div>
+                <div style = "display:none;" id = "uploadContainer">
+                    <form id = "uploadImage">
+                        <input type = "file" name = "file" id = "uploadForm">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class = "col-md-2" style = "margin-left:10px;">
+            <button class = "side-btn" id = "draft">Save as Draft</button>
+            <button class = "side-btn" id = "publish">Publish</button>
+            <button class = "side-btn" id = "delete" disabled>Delete</button>
+            <button class = "side-btn" id = "unpublish" disabled>Unpublish</button>
+            <select name = "tags[]" multiple id = "tags">
+                <option id = "newTag">Add New Tag</option>
+                @php foreach($tags as $tag): @endphp
+                <option value = "{{$tag->id}}"> {{$tag->name}}</option>
+                @php endforeach; @endphp
+            </select>
+            <hr>
+            <p>Author</p>
+            <p>Date</p>
+            <p>Author's Email</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block otherJS %}
+<script src = "{{URL_ROOT}}trumbowyg/dist/trumbowyg.min.js"></script>
+<script src = "{{URL_ROOT}}/js/editor.js"></script>
+<script>
+    const publish = $("#publish");
+    const draft = $("#draft");
+    const addTag = $("#submitAddTag");
+    const newTagBtn = $("#newTag");
+    const uploadBtn = $("#uploadPicture");
+    const uploadForm = $("#uploadForm");
+    let uploadFormValue;
+
+    uploadBtn.click(function(){
+        $("#uploadContainer").show('fast');
+    })
+    /*
+    $("#form").submit(function(e){
+        e.preventDefault();
+        data = new FormData()
+        files = $("#file")[0].files;
+        data.append('image', files);
+
+        if(files.length > 0){
+            $.ajax({
+                'url':'no_url.php',
+                'type':'POST',
+                'data':data,
+                'contentType':false,
+                'processData':false,
+            })
+            //console.log(data);
+            //console.log(data.entries())
+        }else{
+            console.log("No file selected");
+        }
+    })
+
+    'data':{
+                'title':$("#editor-title").text(),
+                'content':$("#editor").val(),
+                'author_email':$("#authorEmail").text(),
+                'tags': $("#tags").val(),
+                //'extrContent': image['image'],
+            },
+
+    */
+
+    newTagBtn.click(function(){
+        $("#popper").show('fast');
+        $("#tagname").focus();
+    })
+
+    addTag.click(function(){
+        $("#popper").hide('fast');
+        tagname = $("#tagname").val();
+        if (tagname.length <= 0){
+            console.log("Cannot add empty tag");
+            exit();
+        }
+        $.ajax({
+            'type':'POST',
+            'url': "{% url addNewTag %}",
+            'data':{
+                'tagname': $("#tagname").val(),
+            },
+            success: function(response){
+                let data = JSON.parse(response);
+                data = data.status;
+                console.log(data);
+            }
+        })
+    })
+
+    draft.click(function(){
+        let confirmDraft = confirm("Are you sure you want to save this post as draft");
+        if(confirmDraft){
+            draftPost();
+        }
+    })
+    publish.click(function(){
+        let confirmPublish = confirm("Are you sure you want to publish this post");
+        if(confirmPublish){
+            publishPost();
+        }
+    })
+
+    function publishPost(){
+        var data = new FormData();
+        files = $("#uploadForm")[0].files;
+        if (files.length < 0){
+            console.log("No file selected")
+            exit();
+        }
+        const tags = $("#tags").val()
+        console.log(tags);
+        if(tags.length < 1){
+            //no tags selected
+            alert("Pls select a tag")
+            exit()
+        }
+
+        data.append('image', files[0]);
+        data.append('title', $("#editor-title").text());
+        data.append('content', $("#editor").val());
+        data.append('author_email', $("#authorEmail").text());
+        data.append('tags', $("#tags").val());
+        $.ajax({
+            'type':'POST',
+            'enctype':'multipart/form-data',
+            'url': "{% url publishPost %}",
+            'data':data,
+            'contentType':false,
+            'processData':false,
+            success:function(response){
+                let data = JSON.parse(response);
+                data = data.status
+                if(data = 'success'){
+                    window.location = "{% url allPosts %}"
+                }
+            },
+        })
+    }
+
+    function draftPost(){
+        const tags = $("#tags").val()
+        console.log(tags);
+        if(tags.length < 1){
+            //no tags selected
+            alert("Pls select a tag")
+            exit()
+        }
+        $.ajax({
+            'type':'POST',
+            'url': "{% url draftPost %}",
+            'data':{
+                'title':$("#editor-title").text(),
+                'content':$("#editor").val(),
+                'author_email':$("#authorEmail").text(),
+                'tags': $("#tags").val(),
+            },
+            success:function(response){
+                let data = JSON.parse(response);
+                data = data.status
+                if(data = 'success'){
+                    window.location = "{% url allPosts %}"
+                }
+            },
+        })
+    }
+</script>
+{% endblock %}
